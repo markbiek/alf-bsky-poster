@@ -30,3 +30,7 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 } else {
 	wp_die( esc_html__( 'Please run composer install to use the ALF Bluesky Poster plugin.', 'alf-bsky-poster' ) );
 }
+
+// Initialize the settings page.
+$settings = new \AlfBsky\AlfBskySettings();
+$settings->init();
