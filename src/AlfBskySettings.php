@@ -18,9 +18,9 @@ class AlfBskySettings {
 	 */
 	private const OPTION_GROUP        = 'alf_bsky_settings';
 	private const SETTINGS_SECTION    = 'alf_bsky_main_section';
-	private const OPTION_IDENTIFIER   = 'alf_bsky_identifier';
-	private const OPTION_APP_PASSWORD = 'alf_bsky_app_password';
-	private const OPTION_CATEGORIES   = 'alf_bsky_categories';
+	public const OPTION_IDENTIFIER   = 'alf_bsky_identifier';
+	public const OPTION_APP_PASSWORD = 'alf_bsky_app_password';
+	public const OPTION_CATEGORIES   = 'alf_bsky_categories';
 
 	/**
 	 * Initialize the settings

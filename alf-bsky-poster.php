@@ -34,3 +34,43 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 // Initialize the settings page.
 $settings = new \AlfBsky\AlfBskySettings();
 $settings->init();
+
+// Add admin notice check.
+add_action(
+	'admin_init',
+	function() {
+		// Skip if user can't manage options.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$identifier = get_option( \AlfBsky\AlfBskySettings::OPTION_IDENTIFIER );
+		$password   = get_option( \AlfBsky\AlfBskySettings::OPTION_APP_PASSWORD );
+		$categories = get_option( \AlfBsky\AlfBskySettings::OPTION_CATEGORIES, array() );
+
+		if ( empty( $identifier ) || empty( $password ) || empty( $categories ) ) {
+			add_action(
+				'admin_notices',
+				function() {
+					?>
+			<div class="notice notice-warning">
+				<p>
+						<?php
+						printf(
+							/* translators: %s: Settings page URL */
+							esc_html__( 'ALF Bluesky Poster needs to be configured. Please visit the %s to set it up.', 'alf-bsky-poster' ),
+							sprintf(
+								'<a href="%s">%s</a>',
+								esc_url( admin_url( 'options-general.php?page=alf-bsky-poster' ) ),
+								esc_html__( 'settings page', 'alf-bsky-poster' )
+							)
+						);
+						?>
+				</p>
+			</div>
+					<?php
+				}
+			);
+		}
+	}
+);
