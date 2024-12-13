@@ -12,11 +12,15 @@ namespace AlfBsky;
  */
 class AlfBskySettings {
 	/**
-	 * Option group name
+	 * Option group name.
 	 *
 	 * @var string
 	 */
 	private const OPTION_GROUP = 'alf_bsky_settings';
+	private const SETTINGS_SECTION = 'alf_bsky_main_section';
+	private const OPTION_IDENTIFIER = 'alf_bsky_identifier';
+	private const OPTION_APP_PASSWORD = 'alf_bsky_app_password';
+	private const OPTION_CATEGORIES = 'alf_bsky_categories';
 
 	/**
 	 * Initialize the settings
@@ -45,21 +49,30 @@ class AlfBskySettings {
 	public function register_settings(): void {
 		register_setting(
 			self::OPTION_GROUP,
-			'alf_bsky_identifier',
+			self::OPTION_IDENTIFIER,
 			array(
-				'type'              => 'string',
+				'type' => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => '',
+				'default' => '',
 			)
 		);
 
 		register_setting(
 			self::OPTION_GROUP,
-			'alf_bsky_app_password',
+			self::OPTION_APP_PASSWORD,
 			array(
-				'type'              => 'string',
+				'type' => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => '',
+				'default' => '',
+			)
+		);
+
+		register_setting(
+			self::OPTION_GROUP,
+			self::OPTION_CATEGORIES,
+			array(
+				'type' => 'array',
+				'default' => array(),
 			)
 		);
 
@@ -84,6 +97,14 @@ class AlfBskySettings {
 			array( $this, 'render_app_password_field' ),
 			'alf-bsky-poster',
 			'alf_bsky_main_section'
+		);
+
+		add_settings_field(
+			'categories',
+			__('Categories to Post', 'alf-bsky-poster'),
+			array($this, 'render_categories_field'),
+			'alf-bsky-poster',
+			self::SETTINGS_SECTION
 		);
 	}
 
@@ -119,11 +140,11 @@ class AlfBskySettings {
 	 * Render the identifier field
 	 */
 	public function render_identifier_field(): void {
-		$value = get_option( 'alf_bsky_identifier' );
+		$value = get_option(self::OPTION_IDENTIFIER);
 		?>
 		<input type="text" 
-			name="alf_bsky_identifier" 
-			value="<?php echo esc_attr( $value ); ?>" 
+			name="<?php echo esc_attr(self::OPTION_IDENTIFIER); ?>" 
+			value="<?php echo esc_attr($value); ?>" 
 			class="regular-text"
 			placeholder="username.bsky.social"
 		/>
@@ -134,11 +155,11 @@ class AlfBskySettings {
 	 * Render the app password field
 	 */
 	public function render_app_password_field(): void {
-		$value = get_option( 'alf_bsky_app_password' );
+		$value = get_option(self::OPTION_APP_PASSWORD);
 		?>
 		<input type="password" 
-			name="alf_bsky_app_password" 
-			value="<?php echo esc_attr( $value ); ?>" 
+			name="<?php echo esc_attr(self::OPTION_APP_PASSWORD); ?>" 
+			value="<?php echo esc_attr($value); ?>" 
 			class="regular-text"
 		/>
 		<p class="description">
@@ -153,5 +174,29 @@ class AlfBskySettings {
 			?>
 		</p>
 		<?php
+	}
+
+	/**
+	 * Render the categories field.
+	 */
+	public function render_categories_field(): void {
+		$categories = get_categories(array( 'hide_empty' => false ));
+		$selected_categories = get_option(self::OPTION_CATEGORIES, array());
+
+		echo '<fieldset>';
+		foreach ($categories as $category) {
+			$checked = in_array($category->term_id, $selected_categories, true) ? 'checked' : '';
+			printf(
+				'<label><input type="checkbox" name="%s[]" value="%d" %s> %s</label><br>',
+				esc_attr(self::OPTION_CATEGORIES),
+				esc_attr($category->term_id),
+				esc_attr($checked),
+				esc_html($category->name)
+			);
+		}
+		echo '</fieldset>';
+		echo '<p class="description">' . 
+			esc_html__('Select which categories should be posted to Bluesky.', 'alf-bsky-poster') . 
+			'</p>';
 	}
 } 
