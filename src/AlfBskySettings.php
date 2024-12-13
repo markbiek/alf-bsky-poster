@@ -185,7 +185,7 @@ class AlfBskySettings {
 
 		echo '<fieldset>';
 		foreach ( $categories as $category ) {
-			$checked = in_array( $category->term_id, $selected_categories, true ) ? 'checked' : '';
+			$checked = in_array( intval( $category->cat_ID ), $selected_categories ) ? 'checked' : '';
 			printf(
 				'<label><input type="checkbox" name="%s[]" value="%d" %s> %s</label><br>',
 				esc_attr( self::OPTION_CATEGORIES ),
