@@ -18,7 +18,15 @@
  * @license   GPL v2 or newer <https://www.gnu.org/licenses/gpl.txt>
  */
 
+namespace AlfBsky;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
+}
+
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	wp_die( esc_html__( 'Please run composer install to use the ALF Bluesky Poster plugin.', 'alf-bsky-poster' ) );
 }
