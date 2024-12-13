@@ -2,7 +2,10 @@
 	"scripts": {
 		"start": "wp-env start",
 		"build": "wp-env build",
-		"dev": "wp-env start -- --watch"
+		"cli": "wp-env run cli",
+		"dev": "wp-env start -- --watch",
+		"lint:php": "composer run-script phpcs",
+		"fix:php": "composer run-script phpcbf"
 	},
 	"devDependencies": {
 		"@wordpress/env": "^10.14.0"
