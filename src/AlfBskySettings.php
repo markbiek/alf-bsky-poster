@@ -183,6 +183,10 @@ class AlfBskySettings {
 		$categories          = get_categories( array( 'hide_empty' => false ) );
 		$selected_categories = get_option( self::OPTION_CATEGORIES, array() );
 
+		if ( empty( $selected_categories ) ) {
+			$selected_categories = array();
+		}
+
 		echo '<fieldset>';
 		foreach ( $categories as $category ) {
 			$checked = in_array( intval( $category->cat_ID ), $selected_categories ) ? 'checked' : '';
