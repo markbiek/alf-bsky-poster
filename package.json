@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"start": "wp-env start",
+		"build": "wp-env build",
+		"dev": "wp-env start -- --watch"
+	},
+	"devDependencies": {
+		"@wordpress/env": "^10.14.0"
+	}
+}
