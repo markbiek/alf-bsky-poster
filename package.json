@@ -1,6 +1,7 @@
 {
 	"scripts": {
 		"start": "wp-env start",
+		"stop": "wp-env stop",
 		"build": "wp-env build",
 		"cli": "wp-env run cli",
 		"dev": "wp-env start -- --watch",
