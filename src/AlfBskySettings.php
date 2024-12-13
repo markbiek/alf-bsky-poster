@@ -16,8 +16,8 @@ class AlfBskySettings {
 	 *
 	 * @var string
 	 */
-	private const OPTION_GROUP        = 'alf_bsky_settings';
-	private const SETTINGS_SECTION    = 'alf_bsky_main_section';
+	private const OPTION_GROUP       = 'alf_bsky_settings';
+	private const SETTINGS_SECTION   = 'alf_bsky_main_section';
 	public const OPTION_IDENTIFIER   = 'alf_bsky_identifier';
 	public const OPTION_APP_PASSWORD = 'alf_bsky_app_password';
 	public const OPTION_CATEGORIES   = 'alf_bsky_categories';
@@ -71,8 +71,9 @@ class AlfBskySettings {
 			self::OPTION_GROUP,
 			self::OPTION_CATEGORIES,
 			array(
-				'type'    => 'array',
-				'default' => array(),
+				'type'              => 'array',
+				'default'           => array(),
+				'sanitize_callback' => array( $this, 'sanitize_categories' ),
 			)
 		);
 
@@ -202,5 +203,19 @@ class AlfBskySettings {
 		echo '<p class="description">' .
 			esc_html__( 'Select which categories should be posted to Bluesky.', 'alf-bsky-poster' ) .
 			'</p>';
+	}
+
+	/**
+	 * Sanitize the categories array to ensure all values are integers.
+	 *
+	 * @param array|mixed $categories The categories array to sanitize.
+	 * @return array The sanitized categories array.
+	 */
+	public function sanitize_categories( $categories ): array {
+		if ( ! is_array( $categories ) ) {
+			return array();
+		}
+
+		return array_map( 'intval', $categories );
 	}
 }

@@ -74,3 +74,58 @@ add_action(
 		}
 	}
 );
+
+function alf_bsky_after_insert_post( $post_id, $post, $update, $post_before ) {
+	// Skip if this isn't a new post.
+	if ( 'publish' !== $post->post_status ) {
+		return;
+	}
+
+	// Get plugin settings.
+	$identifier         = get_option( \AlfBsky\AlfBskySettings::OPTION_IDENTIFIER );
+	$password           = get_option( \AlfBsky\AlfBskySettings::OPTION_APP_PASSWORD );
+	$allowed_categories = get_option( \AlfBsky\AlfBskySettings::OPTION_CATEGORIES, array() );
+
+	// Skip if plugin isn't configured.
+	if ( empty( $identifier ) || empty( $password ) || empty( $allowed_categories ) ) {
+		return;
+	}
+
+	// Get post categories.
+	$post_categories = wp_get_post_categories( $post_id );
+
+	// Check if post is in an allowed category.
+	$should_post = false;
+	foreach ( $post_categories as $cat_id ) {
+		if ( in_array( $cat_id, $allowed_categories ) ) {
+			$should_post = true;
+			break;
+		}
+	}
+
+	if ( ! $should_post ) {
+		return;
+	}
+
+	// Prepare post content.
+	$title     = $post->post_title;
+	$permalink = get_permalink( $post_id );
+	$content   = wp_strip_all_tags( $post->post_content );
+
+	// If content is less than 300 characters, use full content.
+	// Otherwise use excerpt and link.
+	if ( strlen( $content ) <= 300 ) {
+		$bsky_content = $content;
+	} else {
+		$excerpt      = wp_strip_all_tags( get_the_excerpt( $post ) );
+		$bsky_content = $excerpt . "\n\n" . $permalink;
+	}
+
+	try {
+		$bsky_client = new \AlfBsky\Api\BskyClient( $identifier, $password );
+		$bsky_client->create_post( $bsky_content );
+	} catch ( \Exception $e ) {
+		error_log( 'publish_post: Error posting to Bluesky: ' . $e->getMessage() );
+	}
+}
+add_action( 'wp_after_insert_post', '\AlfBsky\alf_bsky_after_insert_post', 10, 4 );
