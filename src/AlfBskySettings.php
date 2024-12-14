@@ -35,8 +35,8 @@ class AlfBskySettings {
 	 */
 	public function add_settings_page(): void {
 		add_options_page(
-			__( 'ALF Bluesky Poster Settings', 'alf-bsky-poster' ),
-			__( 'ALF Bluesky Poster', 'alf-bsky-poster' ),
+			__( 'Antelope Bluesky Poster Settings', 'alf-bsky-poster' ),
+			__( 'Antelope Bluesky Poster', 'alf-bsky-poster' ),
 			'manage_options',
 			'alf-bsky-poster',
 			array( $this, 'render_settings_page' )
