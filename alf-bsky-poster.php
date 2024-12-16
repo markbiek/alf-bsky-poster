@@ -125,7 +125,6 @@ function alf_bsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 		$bsky_client = new \AlfBsky\Api\BskyClient( $identifier, $password );
 		$bsky_client->create_post( $bsky_content );
 	} catch ( \Exception $e ) {
-		error_log( 'publish_post: Error posting to Bluesky: ' . $e->getMessage() );
 		set_transient( 'alf_bsky_error', $e->getMessage(), 60 );
 	}
 }
