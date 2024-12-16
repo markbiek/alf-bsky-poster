@@ -6,8 +6,9 @@
  * Version: 0.1.0
  * Author: Mark Biek
  * Author URI: https://mark.biek.org
- * License: GPL v2 or newer <https://www.gnu.org/licenses/gpl.txt>
- * Text Domain: alf-bsky-poster
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl.txt
+ * Text Domain: antelope-bluesky-poster
  * Requires PHP: 8.1
  * Requires at least: 6.0
  *
