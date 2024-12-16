@@ -29,12 +29,15 @@ class BskyClient {
 	 * Constructor
 	 *
 	 * @param string $identifier Bluesky identifier.
-	 * @param string $password App password.
+	 * @param string $password Encrypted app password.
 	 */
 	public function __construct(
 		private string $identifier,
 		private string $password
-	) {}
+	) {
+		// Decrypt the password.
+		$this->password = \AlfBsky\Util\AlfBskyEncryption::decrypt( $this->password );
+	}
 
 	/**
 	 * Create a post on Bluesky

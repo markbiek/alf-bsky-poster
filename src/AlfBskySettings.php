@@ -7,6 +7,8 @@
 
 namespace AlfBsky;
 
+use AlfBsky\Util\AlfBskyEncryption;
+
 /**
  * Handles the settings page and options management
  */
@@ -44,6 +46,17 @@ class AlfBskySettings {
 	}
 
 	/**
+	 * Sanitize and encrypt the app password.
+	 *
+	 * @param string $value The password to sanitize and encrypt.
+	 * @return string The sanitized and encrypted password.
+	 */
+	public function sanitize_app_password( $value ): string {
+		$sanitized = sanitize_text_field( $value );
+		return AlfBskyEncryption::encrypt( $sanitized );
+	}
+
+	/**
 	 * Register the settings and fields
 	 */
 	public function register_settings(): void {
@@ -62,7 +75,7 @@ class AlfBskySettings {
 			self::OPTION_APP_PASSWORD,
 			array(
 				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => array( $this, 'sanitize_app_password' ),
 				'default'           => '',
 			)
 		);
@@ -156,7 +169,8 @@ class AlfBskySettings {
 	 * Render the app password field
 	 */
 	public function render_app_password_field(): void {
-		$value = get_option( self::OPTION_APP_PASSWORD );
+		$encrypted_value = get_option( self::OPTION_APP_PASSWORD );
+		$value           = AlfBskyEncryption::decrypt( $encrypted_value );
 		?>
 		<input type="password" 
 			name="<?php echo esc_attr( self::OPTION_APP_PASSWORD ); ?>" 
