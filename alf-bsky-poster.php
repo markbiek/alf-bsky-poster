@@ -13,7 +13,7 @@
  *
  * @category  Social_Media
  * @package   ALF_Bsky_Poster
- * @author    Mark Biek <mark@biek.org>
+ * @author    Mark Biek <markbiek@duck.com>
  * @copyright 2024 Mark Biek
  * @license   GPL v2 or newer <https://www.gnu.org/licenses/gpl.txt>
  */
