@@ -126,6 +126,31 @@ function alf_bsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 		$bsky_client->create_post( $bsky_content );
 	} catch ( \Exception $e ) {
 		error_log( 'publish_post: Error posting to Bluesky: ' . $e->getMessage() );
+		set_transient( 'alf_bsky_error', $e->getMessage(), 60 );
 	}
 }
 add_action( 'wp_after_insert_post', '\AlfBsky\alf_bsky_after_insert_post', 10, 4 );
+
+// Add error notice handler.
+add_action(
+	'admin_notices',
+	function() {
+		$error = get_transient( 'alf_bsky_error' );
+		if ( $error ) {
+			delete_transient( 'alf_bsky_error' );
+			?>
+			<div class="notice notice-error">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: Error message */
+						esc_html__( 'Error posting to Bluesky: %s', 'alf-bsky-poster' ),
+						esc_html( $error )
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	}
+);
