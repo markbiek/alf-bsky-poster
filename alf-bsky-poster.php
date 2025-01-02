@@ -76,7 +76,7 @@ add_action(
 	}
 );
 
-function alf_bsky_after_insert_post( $post_id, $post, $update, $post_before ) {
+function alfbsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 	// Skip if this isn't a new post.
 	if ( 'publish' !== $post->post_status ) {
 		return;
@@ -123,13 +123,13 @@ function alf_bsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 	}
 
 	try {
-		$bsky_client = new \AlfBsky\Api\BskyClient( $identifier, $password );
+		$bsky_client = new \AlfBsky\Api\AlfBskyClient( $identifier, $password );
 		$bsky_client->create_post( $bsky_content );
 	} catch ( \Exception $e ) {
 		set_transient( 'alf_bsky_error', $e->getMessage(), 60 );
 	}
 }
-add_action( 'wp_after_insert_post', '\AlfBsky\alf_bsky_after_insert_post', 10, 4 );
+add_action( 'wp_after_insert_post', '\AlfBsky\alfbsky_after_insert_post', 10, 4 );
 
 // Add error notice handler.
 add_action(

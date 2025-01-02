@@ -8,9 +8,9 @@
 namespace AlfBsky\Api;
 
 /**
- * BskyClient class for interacting with the Bluesky API
+ * AlfBskyClient class for interacting with the Bluesky API
  */
-class BskyClient {
+class AlfBskyClient {
 	/**
 	 * Base URL for the Bluesky API
 	 *
