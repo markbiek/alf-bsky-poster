@@ -37,8 +37,8 @@ class AlfBskySettings {
 	 */
 	public function add_settings_page(): void {
 		add_options_page(
-			__( 'Antelope Bluesky Poster Settings', 'alf-bsky-poster' ),
-			__( 'Antelope Bluesky Poster', 'alf-bsky-poster' ),
+			__( 'Antelope Bluesky Poster Settings', 'antelope-bluesky-poster' ),
+			__( 'Antelope Bluesky Poster', 'antelope-bluesky-poster' ),
 			'manage_options',
 			'alf-bsky-poster',
 			array( $this, 'render_settings_page' )
@@ -92,14 +92,14 @@ class AlfBskySettings {
 
 		add_settings_section(
 			'alf_bsky_main_section',
-			__( 'Bluesky Connection Settings', 'alf-bsky-poster' ),
+			__( 'Bluesky Connection Settings', 'antelope-bluesky-poster' ),
 			array( $this, 'render_section_info' ),
 			'alf-bsky-poster'
 		);
 
 		add_settings_field(
 			'alf_bsky_identifier',
-			__( 'Bluesky Identifier', 'alf-bsky-poster' ),
+			__( 'Bluesky Identifier', 'antelope-bluesky-poster' ),
 			array( $this, 'render_identifier_field' ),
 			'alf-bsky-poster',
 			'alf_bsky_main_section'
@@ -107,7 +107,7 @@ class AlfBskySettings {
 
 		add_settings_field(
 			'alf_bsky_app_password',
-			__( 'Bluesky Application Password', 'alf-bsky-poster' ),
+			__( 'Bluesky Application Password', 'antelope-bluesky-poster' ),
 			array( $this, 'render_app_password_field' ),
 			'alf-bsky-poster',
 			'alf_bsky_main_section'
@@ -115,7 +115,7 @@ class AlfBskySettings {
 
 		add_settings_field(
 			'categories',
-			__( 'Categories to Post', 'alf-bsky-poster' ),
+			__( 'Categories to Post', 'antelope-bluesky-poster' ),
 			array( $this, 'render_categories_field' ),
 			'alf-bsky-poster',
 			self::SETTINGS_SECTION
@@ -147,7 +147,7 @@ class AlfBskySettings {
 	 * Render the section information
 	 */
 	public function render_section_info(): void {
-		echo esc_html__( 'Enter your Bluesky credentials below.', 'alf-bsky-poster' );
+		echo esc_html__( 'Enter your Bluesky credentials below.', 'antelope-bluesky-poster' );
 	}
 
 	/**
@@ -181,9 +181,9 @@ class AlfBskySettings {
 			<?php
 			printf(
 				/* translators: %s: URL to Bluesky app passwords page */
-				esc_html__( 'You can generate an app password in your %s.', 'alf-bsky-poster' ),
+				esc_html__( 'You can generate an app password in your %s.', 'antelope-bluesky-poster' ),
 				'<a href="https://bsky.app/settings/app-passwords" target="_blank">' .
-				esc_html__( 'Bluesky account settings', 'alf-bsky-poster' ) .
+				esc_html__( 'Bluesky account settings', 'antelope-bluesky-poster' ) .
 				'</a>'
 			);
 			?>
@@ -215,7 +215,7 @@ class AlfBskySettings {
 		}
 		echo '</fieldset>';
 		echo '<p class="description">' .
-			esc_html__( 'Select which categories should be posted to Bluesky.', 'alf-bsky-poster' ) .
+			esc_html__( 'Select which categories should be posted to Bluesky.', 'antelope-bluesky-poster' ) .
 			'</p>';
 	}
 

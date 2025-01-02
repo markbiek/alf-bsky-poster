@@ -29,7 +29,7 @@ if ( ! defined( 'WPINC' ) ) {
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 } else {
-	wp_die( esc_html__( 'Please run composer install to use the ALF Bluesky Poster plugin.', 'alf-bsky-poster' ) );
+	wp_die( esc_html__( 'Please run composer install to use the ALF Bluesky Poster plugin.', 'antelope-bluesky-poster' ) );
 }
 
 // Initialize the settings page.
@@ -59,11 +59,11 @@ add_action(
 						<?php
 						printf(
 							/* translators: %s: Settings page URL */
-							esc_html__( 'ALF Bluesky Poster needs to be configured. Please visit the %s to set it up.', 'alf-bsky-poster' ),
+							esc_html__( 'Antelope Bluesky Poster needs to be configured. Please visit the %s to set it up.', 'antelope-bluesky-poster' ),
 							sprintf(
 								'<a href="%s">%s</a>',
 								esc_url( admin_url( 'options-general.php?page=alf-bsky-poster' ) ),
-								esc_html__( 'settings page', 'alf-bsky-poster' )
+								esc_html__( 'settings page', 'antelope-bluesky-poster' )
 							)
 						);
 						?>
@@ -144,7 +144,7 @@ add_action(
 					<?php
 					printf(
 						/* translators: %s: Error message */
-						esc_html__( 'Error posting to Bluesky: %s', 'alf-bsky-poster' ),
+						esc_html__( 'Error posting to Bluesky: %s', 'antelope-bluesky-poster' ),
 						esc_html( $error )
 					);
 					?>
