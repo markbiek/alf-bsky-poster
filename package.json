@@ -5,6 +5,7 @@
 		"build": "wp-env build",
 		"cli": "wp-env run cli",
 		"dev": "wp-env start -- --watch",
+		"log": "wp-env run cli cat /var/www/html/wp-content/debug.log",
 		"lint:php": "composer run-script phpcs",
 		"fix:php": "composer run-script phpcbf",
 		"package": "rm -f ../alf-bsky-poster.zip; zip -r ../alf-bsky-poster.zip . -x \".git/*\" -x \"node_modules/*\" -x \"composer.lock\" -x \"package.json\" -x \"package-lock.json\" -x \".wp-env.json\" -x \".gitignore\" -x \"phpcs.xml.dist\"",
