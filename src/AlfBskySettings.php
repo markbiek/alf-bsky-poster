@@ -22,7 +22,8 @@ class AlfBskySettings {
 	private const SETTINGS_SECTION   = 'alf_bsky_main_section';
 	public const OPTION_IDENTIFIER   = 'alf_bsky_identifier';
 	public const OPTION_APP_PASSWORD = 'alf_bsky_app_password';
-	public const OPTION_CATEGORIES   = 'alf_bsky_categories';
+	public const OPTION_CATEGORIES     = 'alf_bsky_categories';
+	public const OPTION_DEBUG_LOGGING  = 'alf_bsky_debug_logging';
 
 	/**
 	 * Initialize the settings
@@ -90,6 +91,16 @@ class AlfBskySettings {
 			)
 		);
 
+		register_setting(
+			self::OPTION_GROUP,
+			self::OPTION_DEBUG_LOGGING,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'default'           => false,
+			)
+		);
+
 		add_settings_section(
 			'alf_bsky_main_section',
 			__( 'Bluesky Connection Settings', 'antelope-bluesky-poster' ),
@@ -117,6 +128,14 @@ class AlfBskySettings {
 			'categories',
 			__( 'Categories to Post', 'antelope-bluesky-poster' ),
 			array( $this, 'render_categories_field' ),
+			'alf-bsky-poster',
+			self::SETTINGS_SECTION
+		);
+
+		add_settings_field(
+			'alf_bsky_debug_logging',
+			__( 'Debug Logging', 'antelope-bluesky-poster' ),
+			array( $this, 'render_debug_logging_field' ),
 			'alf-bsky-poster',
 			self::SETTINGS_SECTION
 		);
@@ -231,5 +250,48 @@ class AlfBskySettings {
 		}
 
 		return array_map( 'intval', $categories );
+	}
+
+	/**
+	 * Render the debug logging field.
+	 */
+	public function render_debug_logging_field(): void {
+		$checked = get_option( self::OPTION_DEBUG_LOGGING ) ? 'checked' : '';
+		printf(
+			'<label><input type="checkbox" name="%s" value="1" %s> %s</label>',
+			esc_attr( self::OPTION_DEBUG_LOGGING ),
+			esc_attr( $checked ),
+			esc_html__( 'Enable debug logging', 'antelope-bluesky-poster' )
+		);
+		echo '<p class="description">' .
+			esc_html__( 'Writes debug info to the WordPress debug.log file.', 'antelope-bluesky-poster' ) .
+			'</p>';
+
+		// Show warning if debug logging enabled but WP_DEBUG_LOG is not.
+		if ( get_option( self::OPTION_DEBUG_LOGGING ) && ! self::is_wp_debug_log_enabled() ) {
+			echo '<p class="notice notice-warning" style="padding: 10px; margin-top: 10px;">' .
+				esc_html__( 'Warning: WP_DEBUG_LOG is not enabled in wp-config.php. Logs will not be written.', 'antelope-bluesky-poster' ) .
+				'</p>';
+		}
+	}
+
+	/**
+	 * Check if WordPress debug logging is enabled.
+	 *
+	 * @return bool True if WP_DEBUG_LOG is enabled, false otherwise.
+	 */
+	public static function is_wp_debug_log_enabled(): bool {
+		return defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG;
+	}
+
+	/**
+	 * Log a debug message if debug logging is enabled.
+	 *
+	 * @param string $message The message to log.
+	 */
+	public static function log( string $message ): void {
+		if ( get_option( self::OPTION_DEBUG_LOGGING ) && self::is_wp_debug_log_enabled() ) {
+			error_log( '[ALF Bluesky Poster] ' . $message );
+		}
 	}
 }

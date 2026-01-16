@@ -77,8 +77,11 @@ add_action(
 );
 
 function alfbsky_after_insert_post( $post_id, $post, $update, $post_before ) {
+	\AlfBsky\AlfBskySettings::log( "Post $post_id hook fired, status: {$post->post_status}" );
+
 	// Skip if this isn't a new post.
 	if ( 'publish' !== $post->post_status ) {
+		\AlfBsky\AlfBskySettings::log( "Post $post_id skipped: status is not 'publish'" );
 		return;
 	}
 
@@ -89,6 +92,7 @@ function alfbsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 
 	// Skip if plugin isn't configured.
 	if ( empty( $identifier ) || empty( $password ) || empty( $allowed_categories ) ) {
+		\AlfBsky\AlfBskySettings::log( "Post $post_id skipped: plugin not fully configured" );
 		return;
 	}
 
@@ -105,8 +109,11 @@ function alfbsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 	}
 
 	if ( ! $should_post ) {
+		\AlfBsky\AlfBskySettings::log( "Post $post_id skipped: not in allowed categories" );
 		return;
 	}
+
+	\AlfBsky\AlfBskySettings::log( "Post $post_id matches category filter, proceeding" );
 
 	// Prepare post content.
 	$title     = $post->post_title;
@@ -122,10 +129,14 @@ function alfbsky_after_insert_post( $post_id, $post, $update, $post_before ) {
 		$bsky_content = $excerpt . "\n\n" . $permalink;
 	}
 
+	\AlfBsky\AlfBskySettings::log( 'Creating Bluesky post: "' . substr( $bsky_content, 0, 50 ) . '..."' );
+
 	try {
 		$bsky_client = new \AlfBsky\Api\AlfBskyClient( $identifier, $password );
 		$bsky_client->create_post( $bsky_content );
+		\AlfBsky\AlfBskySettings::log( "Post $post_id successfully posted to Bluesky" );
 	} catch ( \Exception $e ) {
+		\AlfBsky\AlfBskySettings::log( "Post $post_id failed: " . $e->getMessage() );
 		set_transient( 'alf_bsky_error', $e->getMessage(), 60 );
 	}
 }

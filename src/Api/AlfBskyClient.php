@@ -73,13 +73,19 @@ class AlfBskyClient {
 		);
 
 		if ( is_wp_error( $response ) ) {
+			\AlfBsky\AlfBskySettings::log( 'API request failed: ' . $response->get_error_message() );
 			throw new \Exception( 'Failed to create post: ' . $response->get_error_message() );
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body        = json_decode( wp_remote_retrieve_body( $response ), true );
+		$status_code = wp_remote_retrieve_response_code( $response );
 
-		if ( wp_remote_retrieve_response_code( $response ) !== 200 ) {
-			throw new \Exception( 'Failed to create post: ' . ( $body['message'] ?? 'Unknown error' ) );
+		\AlfBsky\AlfBskySettings::log( "API response: HTTP $status_code" );
+
+		if ( $status_code !== 200 ) {
+			$error_msg = $body['message'] ?? 'Unknown error';
+			\AlfBsky\AlfBskySettings::log( "API error: $error_msg" );
+			throw new \Exception( 'Failed to create post: ' . $error_msg );
 		}
 
 		return $body;
@@ -91,6 +97,8 @@ class AlfBskyClient {
 	 * @throws \Exception If authentication fails.
 	 */
 	private function authenticate(): void {
+		\AlfBsky\AlfBskySettings::log( 'Authenticating as ' . $this->identifier );
+
 		$response = wp_remote_post(
 			$this->api_base_url . 'com.atproto.server.createSession',
 			array(
@@ -107,14 +115,20 @@ class AlfBskyClient {
 		);
 
 		if ( is_wp_error( $response ) ) {
+			\AlfBsky\AlfBskySettings::log( 'Authentication failed: ' . $response->get_error_message() );
 			throw new \Exception( 'Authentication failed: ' . $response->get_error_message() );
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body        = json_decode( wp_remote_retrieve_body( $response ), true );
+		$status_code = wp_remote_retrieve_response_code( $response );
 
-		if ( wp_remote_retrieve_response_code( $response ) !== 200 ) {
-			throw new \Exception( 'Authentication failed: ' . ( $body['message'] ?? 'Unknown error' ) );
+		if ( $status_code !== 200 ) {
+			$error_msg = $body['message'] ?? 'Unknown error';
+			\AlfBsky\AlfBskySettings::log( "Authentication failed (HTTP $status_code): $error_msg" );
+			throw new \Exception( 'Authentication failed: ' . $error_msg );
 		}
+
+		\AlfBsky\AlfBskySettings::log( 'Authentication successful' );
 
 		$this->jwt = $body['accessJwt'];
 		$this->did = $body['did'];
