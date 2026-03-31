@@ -3,7 +3,7 @@
  * Plugin Name: Antelope Bluesky Poster
  * Plugin URI: https://github.com/markbiek/alf-bsky-poster
  * Description: A WordPress plugin to automatically post content to Bluesky
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: Mark Biek
  * Author URI: https://mark.biek.org
  * License: GPLv2 or later
