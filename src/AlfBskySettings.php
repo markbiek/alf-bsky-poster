@@ -47,14 +47,21 @@ class AlfBskySettings {
 	}
 
 	/**
-	 * Sanitize and encrypt the app password.
+	 * Encrypt the app password before it is stored.
 	 *
-	 * @param string $value The password to sanitize and encrypt.
-	 * @return string The sanitized and encrypted password.
+	 * This is hooked to pre_update_option rather than sanitize_callback
+	 * because sanitize_option fires twice on first save (once in
+	 * update_option, once in add_option), which would double-encrypt.
+	 *
+	 * @param string $value The new password value.
+	 * @param string $old_value The old password value.
+	 * @return string The encrypted password.
 	 */
-	public function sanitize_app_password( $value ): string {
-		$sanitized = sanitize_text_field( $value );
-		return AlfBskyEncryption::encrypt( $sanitized );
+	public function encrypt_app_password( $value, $old_value ): string {
+		if ( empty( $value ) ) {
+			return '';
+		}
+		return AlfBskyEncryption::encrypt( $value );
 	}
 
 	/**
@@ -76,9 +83,16 @@ class AlfBskySettings {
 			self::OPTION_APP_PASSWORD,
 			array(
 				'type'              => 'string',
-				'sanitize_callback' => array( $this, 'sanitize_app_password' ),
+				'sanitize_callback' => 'sanitize_text_field',
 				'default'           => '',
 			)
+		);
+
+		add_filter(
+			'pre_update_option_' . self::OPTION_APP_PASSWORD,
+			array( $this, 'encrypt_app_password' ),
+			10,
+			2
 		);
 
 		register_setting(
